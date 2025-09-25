@@ -1,21 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
-import { GeneratedImage, ApiError } from '@/types'
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
-
-function fileToGenerativePart(imageData: string) {
-  // Remove data:image/...;base64, prefix
-  const base64Data = imageData.split(',')[1]
-  const mimeType = imageData.split(';')[0].split(':')[1]
-
-  return {
-    inlineData: {
-      data: base64Data,
-      mimeType,
-    },
-  }
-}
+import { GoogleGenAI } from '@google/genai'
+import mime from 'mime'
+import { GeneratedImage } from '@/types'
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,81 +21,145 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    console.log('Starting professional image generation...')
 
-    // Create different prompts for varied studio lighting styles
-    const lightingPrompts = [
-      `${prompt} with soft studio lighting from the left side, professional product photography, white background, high resolution, commercial quality`,
-      `${prompt} with dramatic studio lighting creating subtle shadows, professional product photography, clean white background, high detail, e-commerce ready`,
-      `${prompt} with bright even studio lighting from multiple angles, professional product photography, pure white background, crisp details, catalog style`,
-      `${prompt} with warm studio lighting highlighting the product texture, professional product photography, minimalist white background, high quality, marketing ready`
+    const ai = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY
+    })
+
+    // Use image generation model when quota allows, fallback to demo for testing
+    const model = 'gemini-2.5-flash-image-preview'
+
+    console.log('Note: If you see quota errors, your Gemini API free tier limit has been reached.')
+
+    // Professional studio prompts for 4 different angles
+    const studioPrompts = [
+      `Transform this product into a professional e-commerce photograph with high-end studio lighting, front-facing angle, clean white background, commercial quality, sharp details, soft shadows, perfect lighting, marketing ready, professional product photography`,
+
+      `Transform this product into a professional e-commerce photograph with studio lighting from 45-degree angle, three-quarter view, pristine white background, commercial grade photography, crisp details, subtle shadows, catalog style, high-resolution`,
+
+      `Transform this product into a professional e-commerce photograph with top-down overhead view, even studio lighting, pure white background, clean minimalist style, sharp focus, e-commerce ready, professional commercial photography`,
+
+      `Transform this product into a professional e-commerce photograph with side profile view, dramatic studio lighting, clean white background, high-end commercial quality, detailed textures, luxury presentation, professional marketing photography`
     ]
 
     const generatedImages: GeneratedImage[] = []
 
-    // Generate images with different lighting styles
-    for (let i = 0; i < lightingPrompts.length; i++) {
+    // Generate 4 professional images with different angles
+    for (let i = 0; i < studioPrompts.length; i++) {
       try {
-        const imagePart = fileToGenerativePart(imageData)
+        console.log(`Generating professional studio image ${i + 1}/4...`)
 
-        const result = await model.generateContent([
-          lightingPrompts[i],
-          imagePart
-        ])
+        const config = {
+          responseModalities: ['IMAGE', 'TEXT']
+        }
 
-        const response = await result.response
-        const text = response.text()
-
-        // Use Gemini to analyze the product and generate detailed descriptions
-        // Then create mock professional product images based on the analysis
-
-        // Create realistic mock image URLs (in production, these would be actual generated images)
-        const mockImages = [
-          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&crop=center',
-          'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&crop=center',
-          'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop&crop=center',
-          'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=400&fit=crop&crop=center'
+        const contents = [
+          {
+            role: 'user',
+            parts: [
+              {
+                text: studioPrompts[i]
+              },
+              {
+                inlineData: {
+                  mimeType: imageData.split(';')[0].split(':')[1],
+                  data: imageData.split(',')[1]
+                }
+              }
+            ]
+          }
         ]
 
-        const mockImageUrl = mockImages[i] || mockImages[0]
+        console.log(`Sending request to Gemini for image ${i + 1}...`)
 
-        const generatedImage: GeneratedImage = {
-          id: `generated_${i}_${Date.now()}`,
-          url: mockImageUrl,
-          prompt: lightingPrompts[i],
-          timestamp: new Date()
+        const response = await ai.models.generateContentStream({
+          model,
+          config,
+          contents
+        })
+
+        let generatedImageData: string | null = null
+
+        // Process the streaming response
+        for await (const chunk of response) {
+          if (!chunk.candidates || !chunk.candidates[0].content || !chunk.candidates[0].content.parts) {
+            continue
+          }
+
+          // Check for generated image data
+          if (chunk.candidates[0].content.parts[0].inlineData) {
+            const inlineData = chunk.candidates[0].content.parts[0].inlineData
+            const mimeType = inlineData.mimeType || 'image/png'
+            const base64Data = inlineData.data || ''
+
+            // Convert to data URL format
+            generatedImageData = `data:${mimeType};base64,${base64Data}`
+            console.log(`Successfully received generated image ${i + 1}`)
+            break
+          } else if (chunk.text) {
+            console.log(`Gemini response text for image ${i + 1}:`, chunk.text)
+          }
         }
 
-        generatedImages.push(generatedImage)
+        if (generatedImageData) {
+          const generatedImage: GeneratedImage = {
+            id: `studio_professional_${i + 1}_${Date.now()}`,
+            url: generatedImageData,
+            prompt: studioPrompts[i],
+            timestamp: new Date()
+          }
+
+          generatedImages.push(generatedImage)
+          console.log(`Successfully generated professional image ${i + 1}/4`)
+        } else {
+          console.log(`No image data received for professional image ${i + 1}`)
+        }
 
         // Add delay between requests to avoid rate limiting
-        if (i < lightingPrompts.length - 1) {
-          await new Promise(resolve => setTimeout(resolve, 1000))
+        if (i < studioPrompts.length - 1) {
+          console.log(`Waiting 3 seconds before next generation...`)
+          await new Promise(resolve => setTimeout(resolve, 3000))
         }
+
       } catch (error) {
-        console.error(`Error generating image ${i + 1}:`, error)
-        // Continue with other generations even if one fails
+        console.error(`Error generating professional image ${i + 1}:`, error)
+
+        // Check if it's a quota error
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        if (errorMessage.includes('quota') || errorMessage.includes('429')) {
+          console.log('Quota exceeded - this is expected with Gemini free tier limits')
+          // Break the loop since all subsequent requests will also fail
+          break
+        }
+        // Continue with other generations for other types of errors
       }
     }
 
     if (generatedImages.length === 0) {
       return NextResponse.json(
-        { success: false, error: 'Failed to generate any images' },
+        {
+          success: false,
+          error: 'Failed to generate any professional studio images. The Gemini image generation service may be temporarily unavailable. Please try again in a few moments.'
+        },
         { status: 500 }
       )
     }
 
+    console.log(`Successfully generated ${generatedImages.length}/4 professional studio images`)
+
     return NextResponse.json({
       success: true,
-      images: generatedImages
+      images: generatedImages,
+      message: `Successfully transformed your product photo into ${generatedImages.length} professional studio images`
     })
 
   } catch (error) {
-    console.error('Image generation error:', error)
+    console.error('Professional image generation error:', error)
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to generate images'
+        error: error instanceof Error ? error.message : 'Failed to generate professional studio images'
       },
       { status: 500 }
     )

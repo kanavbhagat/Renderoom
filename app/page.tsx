@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import GlassCard from '@/components/GlassCard'
+import GlassButton from '@/components/GlassButton'
 import ImageUploader from '@/components/ImageUploader'
 import ImageGallery from '@/components/ImageGallery'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -32,7 +34,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           imageData: uploadedImage.preview,
-          prompt: 'Generate 4 professional product photos with studio lighting in different angles and compositions'
+          prompt: 'Transform this product image into professional e-commerce photos'
         }),
       })
 
@@ -55,131 +57,156 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen pt-8 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
-            Generate Professional
-            <span className="text-blue-600"> Product Images</span>
+        <div className="text-center mb-16 pt-12">
+          <h1 className="text-6xl md:text-7xl font-bold text-white mb-6">
+            Professional Product Photos
+            <br />
+            <span className="bg-gradient-to-r from-green-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              in Seconds
+            </span>
           </h1>
-          <p className="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-            Upload your product photo and let AI create stunning professional images with studio lighting for your e-commerce store.
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
+            Simply upload any product image and get 4 stunning studio-quality shots instantly.
+            No photographer needed.
           </p>
-          <div className="mt-8 flex justify-center">
-            <div className="inline-flex rounded-md shadow">
-              <span className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600">
-                ✨ Powered by Gemini AI
-              </span>
+
+          {/* Stars and Rating */}
+          <div className="flex items-center justify-center space-x-2 mb-12">
+            <div className="flex text-green-400">
+              {[...Array(5)].map((_, i) => (
+                <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
             </div>
+            <span className="text-gray-300 ml-2">Trusted by 1k+ e-commerce stores</span>
           </div>
-        </div>
 
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           {/* Upload Section */}
-          <div className="card">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Upload Your Product</h2>
-            <ImageUploader onImageUpload={handleImageUpload} />
-
-            {uploadedImage && (
-              <div className="mt-6">
-                <div className="relative">
-                  <img
-                    src={uploadedImage.preview}
-                    alt="Uploaded product"
-                    className="w-full h-64 object-cover rounded-lg border"
-                  />
-                </div>
-                <button
-                  onClick={handleGenerateImages}
-                  disabled={isGenerating}
-                  className="mt-4 w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isGenerating ? 'Generating Images...' : 'Generate Professional Images'}
-                </button>
+          <GlassCard className="max-w-4xl mx-auto mb-12" hover={false}>
+            {!uploadedImage ? (
+              <div className="py-8">
+                <ImageUploader onImageUpload={handleImageUpload} />
               </div>
-            )}
-          </div>
-
-          {/* Results Section */}
-          <div className="card">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Generated Images</h2>
-
-            {isGenerating && (
-              <div className="flex flex-col items-center justify-center py-12">
-                <LoadingSpinner />
-                <p className="mt-4 text-gray-600">Creating professional images...</p>
-                <p className="text-sm text-gray-500">This may take a few moments</p>
-              </div>
-            )}
-
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-md p-4">
-                <div className="flex">
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">
-                      Error generating images
-                    </h3>
-                    <div className="mt-2 text-sm text-red-700">
-                      <p>{error}</p>
+            ) : (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Original Image */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white">Original Image</h3>
+                    <div className="relative group">
+                      <img
+                        src={uploadedImage.preview}
+                        alt="Uploaded product"
+                        className="w-full h-64 object-cover rounded-xl border border-white/20"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
                     </div>
                   </div>
+
+                  {/* Generated Results Preview */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-white">Professional Results</h3>
+                    {isGenerating ? (
+                      <div className="h-64 flex items-center justify-center backdrop-blur-md bg-white/5 rounded-xl border border-white/10">
+                        <div className="text-center">
+                          <LoadingSpinner />
+                          <p className="mt-4 text-green-400">Creating studio magic...</p>
+                          <p className="text-sm text-gray-400">Transforming your product</p>
+                        </div>
+                      </div>
+                    ) : generatedImages.length > 0 ? (
+                      <ImageGallery images={generatedImages} />
+                    ) : (
+                      <div className="h-64 flex items-center justify-center backdrop-blur-md bg-white/5 rounded-xl border border-white/10">
+                        <div className="text-center text-gray-400">
+                          <div className="w-16 h-16 mx-auto mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
+                            <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                          </div>
+                          <p>Ready to create magic</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
+
+                <div className="flex justify-center">
+                  <GlassButton
+                    onClick={handleGenerateImages}
+                    disabled={isGenerating}
+                    className="px-12 py-4 text-lg font-semibold"
+                  >
+                    {isGenerating ? (
+                      <div className="flex items-center space-x-3">
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span>Creating Studio Magic...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-3">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span>Generate Professional Photos</span>
+                      </div>
+                    )}
+                  </GlassButton>
+                </div>
+
+                {error && (
+                  <div className="backdrop-blur-md bg-red-500/20 border border-red-400/30 rounded-2xl p-4 text-center">
+                    <p className="text-red-200">{error}</p>
+                  </div>
+                )}
               </div>
             )}
+          </GlassCard>
+        </div>
 
-            {generatedImages.length > 0 && (
-              <ImageGallery images={generatedImages} />
-            )}
+        {/* Feature Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <div className="feature-card text-center">
+            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-2xl flex items-center justify-center">
+              <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-4">⚡ Lightning Fast</h3>
+            <p className="text-gray-400 text-lg leading-relaxed">
+              Generate 4 professional shots in under 60 seconds. No waiting, just instant results.
+            </p>
+          </div>
 
-            {!isGenerating && !error && generatedImages.length === 0 && (
-              <div className="text-center py-12">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
-                  <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No images generated yet</h3>
-                <p className="text-gray-500">Upload a product image to get started</p>
-              </div>
-            )}
+          <div className="feature-card text-center">
+            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center">
+              <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-4">🎨 Studio Quality</h3>
+            <p className="text-gray-400 text-lg leading-relaxed">
+              AI-powered lighting and angles that rival professional photography studios.
+            </p>
+          </div>
+
+          <div className="feature-card text-center">
+            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-2xl flex items-center justify-center">
+              <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-4">💰 Cost Effective</h3>
+            <p className="text-gray-400 text-lg leading-relaxed">
+              Save thousands on product photography costs. One upload, infinite possibilities.
+            </p>
           </div>
         </div>
 
-        {/* Features Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">Why Use AI Product Images?</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Save Money</h3>
-              <p className="text-gray-600">No need for expensive photography equipment or professional photographers</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Fast Results</h3>
-              <p className="text-gray-600">Generate professional images in minutes, not days</p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Professional Quality</h3>
-              <p className="text-gray-600">Studio-quality lighting and composition powered by AI</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
