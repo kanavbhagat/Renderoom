@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { GeneratedImage } from '@/types'
 
 interface ImageGalleryProps {
@@ -83,9 +84,11 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
               e.currentTarget.style.transform = 'scale(1)'
             }}
           >
-            <img
+            <Image
               src={image.url}
               alt={`Generated product ${index + 1}`}
+              width={200}
+              height={120}
               style={{
                 width: '100%',
                 height: '120px',
@@ -179,9 +182,11 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             position: 'relative',
             padding: '16px'
           }}>
-            <img
+            <Image
               src={selectedImage.url}
               alt="Generated product"
+              width={800}
+              height={600}
               style={{
                 maxWidth: '100%',
                 maxHeight: '70vh',

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import ImageUploader from '@/components/ImageUploader'
 import ImageGallery from '@/components/ImageGallery'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -126,10 +127,13 @@ export default function Home() {
                     <div>
                       <h3 className="result-title">Original Image</h3>
                       <div className="result-card">
-                        <img
+                        <Image
                           src={uploadedImage.preview}
                           alt="Uploaded product"
                           className="image-preview"
+                          width={400}
+                          height={400}
+                          style={{ objectFit: 'cover' }}
                         />
                       </div>
                     </div>
