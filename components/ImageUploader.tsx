@@ -82,30 +82,19 @@ export default function ImageUploader({ onImageUpload }: ImageUploaderProps) {
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`
-          backdrop-blur-md border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-300
-          ${isDragActive
-            ? 'border-green-400/60 bg-green-500/10'
-            : 'border-white/20 hover:border-green-400/40 hover:bg-white/5'
-          }
-        `}
+        className={`upload-area ${isDragActive ? 'active' : ''}`}
       >
         <input
           type="file"
           id="file-upload"
-          className="sr-only"
+          className="file-input"
           accept="image/*"
           onChange={handleFileSelect}
         />
-        <label htmlFor="file-upload" className="cursor-pointer block">
-          <div className="flex flex-col items-center">
-            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-500/20 to-cyan-500/20 rounded-2xl flex items-center justify-center">
-              <svg
-                className="w-10 h-10 text-green-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
+        <label htmlFor="file-upload" style={{ cursor: 'pointer', display: 'block' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div className="upload-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -114,27 +103,26 @@ export default function ImageUploader({ onImageUpload }: ImageUploaderProps) {
                 />
               </svg>
             </div>
-            <h3 className="text-2xl font-semibold text-white mb-3">
+            <h3 className="upload-title">
               Upload Product Image
             </h3>
-            <p className="text-gray-300 mb-4 text-lg">
+            <p className="upload-subtitle">
               Drag and drop your image here, or click to browse
             </p>
-            <div className="backdrop-blur-sm bg-white/10 rounded-xl px-4 py-2 border border-white/20">
-              <p className="text-sm text-gray-400">
-                Supports JPEG, PNG, WebP (Max 10MB)
-              </p>
+            <div className="upload-info">
+              Supports JPEG, PNG, WebP (Max 10MB)
             </div>
           </div>
         </label>
       </div>
 
       {uploadError && (
-        <div className="mt-6 backdrop-blur-md bg-red-500/20 border border-red-400/30 rounded-2xl p-4">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
+        <div className="error-message">
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ flexShrink: 0 }}>
               <svg
-                className="w-5 h-5 text-red-400"
+                width="20"
+                height="20"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -147,70 +135,96 @@ export default function ImageUploader({ onImageUpload }: ImageUploaderProps) {
                 />
               </svg>
             </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-200">Upload Error</h3>
-              <p className="mt-1 text-sm text-red-300">{uploadError}</p>
+            <div style={{ marginLeft: '12px' }}>
+              <h3 style={{ fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>Upload Error</h3>
+              <p style={{ fontSize: '14px' }}>{uploadError}</p>
             </div>
           </div>
         </div>
       )}
 
-      <div className="mt-8">
-        <h4 className="text-lg font-semibold text-white mb-4">✨ Tips for best results:</h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="backdrop-blur-sm bg-white/5 rounded-xl p-4 border border-white/10">
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div style={{ marginTop: '32px' }}>
+        <h4 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', textAlign: 'center', color: 'var(--text-primary)' }}>
+          💡 Tips for best results
+        </h4>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', fontSize: '14px' }}>
+          <div className="result-card" style={{ padding: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                background: 'rgba(139, 95, 191, 0.2)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <svg width="12" height="12" fill="none" stroke="var(--primary-purple)" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <div>
-                <p className="text-white font-medium">Clear & High Resolution</p>
-                <p className="text-gray-400 text-sm">Use sharp, well-lit product photos</p>
-              </div>
+              <p style={{ color: 'var(--text-primary)', fontWeight: '500', fontSize: '12px' }}>High Resolution</p>
             </div>
           </div>
 
-          <div className="backdrop-blur-sm bg-white/5 rounded-xl p-4 border border-white/10">
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="result-card" style={{ padding: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                background: 'rgba(249, 115, 22, 0.2)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <svg width="12" height="12" fill="none" stroke="var(--primary-orange)" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <div>
-                <p className="text-white font-medium">Product Focused</p>
-                <p className="text-gray-400 text-sm">Product should be the main subject</p>
-              </div>
+              <p style={{ color: 'var(--text-primary)', fontWeight: '500', fontSize: '12px' }}>Product Focused</p>
             </div>
           </div>
 
-          <div className="backdrop-blur-sm bg-white/5 rounded-xl p-4 border border-white/10">
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-emerald-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="result-card" style={{ padding: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                background: 'rgba(168, 85, 247, 0.2)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <svg width="12" height="12" fill="none" stroke="var(--secondary-purple)" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <div>
-                <p className="text-white font-medium">Clean Background</p>
-                <p className="text-gray-400 text-sm">Avoid cluttered or busy backgrounds</p>
-              </div>
+              <p style={{ color: 'var(--text-primary)', fontWeight: '500', fontSize: '12px' }}>Clean Background</p>
             </div>
           </div>
 
-          <div className="backdrop-blur-sm bg-white/5 rounded-xl p-4 border border-white/10">
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="result-card" style={{ padding: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{
+                width: '24px',
+                height: '24px',
+                background: 'rgba(236, 72, 153, 0.2)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <svg width="12" height="12" fill="none" stroke="var(--accent-pink)" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <div>
-                <p className="text-white font-medium">Good Lighting</p>
-                <p className="text-gray-400 text-sm">Better input = better AI results</p>
-              </div>
+              <p style={{ color: 'var(--text-primary)', fontWeight: '500', fontSize: '12px' }}>Perfect Lighting</p>
             </div>
           </div>
         </div>

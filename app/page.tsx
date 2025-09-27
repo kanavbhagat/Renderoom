@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import GlassCard from '@/components/GlassCard'
-import GlassButton from '@/components/GlassButton'
 import ImageUploader from '@/components/ImageUploader'
 import ImageGallery from '@/components/ImageGallery'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -57,157 +55,217 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen pt-8 pb-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <>
+      {/* Animated Background */}
+      <div className="animated-background">
+        <div className="floating-orb"></div>
+        <div className="floating-orb"></div>
+        <div className="floating-orb"></div>
+      </div>
 
-        {/* Hero Section */}
-        <div className="text-center mb-16 pt-12">
-          <h1 className="text-6xl md:text-7xl font-bold text-white mb-6">
-            Professional Product Photos
-            <br />
-            <span className="bg-gradient-to-r from-green-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-              in Seconds
-            </span>
-          </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
-            Simply upload any product image and get 4 stunning studio-quality shots instantly.
-            No photographer needed.
-          </p>
+      {/* Main Content */}
+      <div className="main-content">
+        <div className="container">
+          {/* Hero Section */}
+          <section className="hero">
+            <h1 className="hero-title">
+              Transform Products into
+              <br />
+              <span style={{ background: 'linear-gradient(135deg, var(--primary-orange), var(--accent-pink))', backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Studio Magic</span>
+            </h1>
+            <p className="hero-subtitle">
+              Upload any product photo and watch our AI create 4 breathtaking studio shots with professional lighting, angles, and backgrounds.
+            </p>
 
-          {/* Stars and Rating */}
-          <div className="flex items-center justify-center space-x-2 mb-12">
-            <div className="flex text-green-400">
-              {[...Array(5)].map((_, i) => (
-                <svg key={i} className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
+            {/* Star Rating */}
+            <div className="hero-rating">
+              <div className="stars">★★★★★</div>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: '500' }}>Trusted by 1,000+ creators worldwide</span>
             </div>
-            <span className="text-gray-300 ml-2">Trusted by 1k+ e-commerce stores</span>
-          </div>
 
-          {/* Upload Section */}
-          <GlassCard className="max-w-4xl mx-auto mb-12" hover={false}>
-            {!uploadedImage ? (
-              <div className="py-8">
-                <ImageUploader onImageUpload={handleImageUpload} />
+            {/* Stats Bar */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '48px',
+              marginBottom: '40px',
+              flexWrap: 'wrap'
+            }}>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--primary-orange)', marginBottom: '4px' }}>50K+</div>
+                <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Photos Generated</div>
               </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  {/* Original Image */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-white">Original Image</h3>
-                    <div className="relative group">
-                      <img
-                        src={uploadedImage.preview}
-                        alt="Uploaded product"
-                        className="w-full h-64 object-cover rounded-xl border border-white/20"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
-                    </div>
-                  </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--primary-purple)', marginBottom: '4px' }}>30s</div>
+                <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Average Time</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--accent-pink)', marginBottom: '4px' }}>4K</div>
+                <div style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>Resolution</div>
+              </div>
+            </div>
 
-                  {/* Generated Results Preview */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-white">Professional Results</h3>
-                    {isGenerating ? (
-                      <div className="h-64 flex items-center justify-center backdrop-blur-md bg-white/5 rounded-xl border border-white/10">
-                        <div className="text-center">
-                          <LoadingSpinner />
-                          <p className="mt-4 text-green-400">Creating studio magic...</p>
-                          <p className="text-sm text-gray-400">Transforming your product</p>
-                        </div>
+            {/* Upload or Results Section */}
+            {!uploadedImage ? (
+              <section className="upload-section">
+                <div className="glass-card">
+                  <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                    <h2 style={{ fontSize: '32px', fontWeight: '700', marginBottom: '12px', background: 'linear-gradient(135deg, var(--text-primary), var(--primary-purple))', backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                      Ready to Create Magic?
+                    </h2>
+                    <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>Drop your product image below and watch the transformation</p>
+                  </div>
+                  <ImageUploader onImageUpload={handleImageUpload} />
+                </div>
+              </section>
+            ) : (
+              <section className="results-section">
+                <div className="glass-card" style={{ padding: '32px' }}>
+                  <div className="results-grid">
+                    {/* Original Image */}
+                    <div>
+                      <h3 className="result-title">Original Image</h3>
+                      <div className="result-card">
+                        <img
+                          src={uploadedImage.preview}
+                          alt="Uploaded product"
+                          className="image-preview"
+                        />
                       </div>
-                    ) : generatedImages.length > 0 ? (
-                      <ImageGallery images={generatedImages} />
-                    ) : (
-                      <div className="h-64 flex items-center justify-center backdrop-blur-md bg-white/5 rounded-xl border border-white/10">
-                        <div className="text-center text-gray-400">
-                          <div className="w-16 h-16 mx-auto mb-4 bg-green-500/20 rounded-full flex items-center justify-center">
-                            <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    </div>
+
+                    {/* Generated Results */}
+                    <div>
+                      <h3 className="result-title">Professional Results</h3>
+                      {isGenerating ? (
+                        <div className="loading-container">
+                          <LoadingSpinner />
+                          <div className="loading-text">Creating studio magic...</div>
+                          <div className="loading-subtext">Transforming your product</div>
+                        </div>
+                      ) : generatedImages.length > 0 ? (
+                        <div className="result-card">
+                          <ImageGallery images={generatedImages} />
+                        </div>
+                      ) : (
+                        <div className="loading-container">
+                          <div style={{
+                            width: '64px',
+                            height: '64px',
+                            background: 'linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(34, 197, 94, 0.2))',
+                            borderRadius: '16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginBottom: '16px'
+                          }}>
+                            <svg width="32" height="32" fill="none" stroke="var(--primary-green)" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
                           </div>
-                          <p>Ready to create magic</p>
+                          <div className="loading-text">Ready to create magic</div>
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex justify-center">
-                  <GlassButton
-                    onClick={handleGenerateImages}
-                    disabled={isGenerating}
-                    className="px-12 py-4 text-lg font-semibold"
-                  >
-                    {isGenerating ? (
-                      <div className="flex items-center space-x-3">
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        <span>Creating Studio Magic...</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center space-x-3">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        <span>Generate Professional Photos</span>
-                      </div>
-                    )}
-                  </GlassButton>
-                </div>
+                  {/* Action Buttons */}
+                  <div className="button-group">
+                    <button
+                      onClick={handleGenerateImages}
+                      disabled={isGenerating}
+                      className={`glass-button-primary ${isGenerating ? '' : ''}`}
+                      style={{ opacity: isGenerating ? 0.5 : 1, cursor: isGenerating ? 'not-allowed' : 'pointer' }}
+                    >
+                      {isGenerating ? (
+                        <>
+                          <div className="spinner" style={{ width: '20px', height: '20px', margin: '0 8px 0 0' }}></div>
+                          Creating Studio Magic...
+                        </>
+                      ) : (
+                        <>
+                          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          Generate Professional Photos
+                        </>
+                      )}
+                    </button>
 
-                {error && (
-                  <div className="backdrop-blur-md bg-red-500/20 border border-red-400/30 rounded-2xl p-4 text-center">
-                    <p className="text-red-200">{error}</p>
+                    <button
+                      onClick={() => {
+                        setUploadedImage(null)
+                        setGeneratedImages([])
+                        setError(null)
+                      }}
+                      className="glass-button"
+                    >
+                      Upload New Image
+                    </button>
                   </div>
-                )}
-              </div>
+
+                  {error && (
+                    <div className="error-message">
+                      {error}
+                    </div>
+                  )}
+                </div>
+              </section>
             )}
-          </GlassCard>
+
+            {/* Process Steps */}
+            <section style={{ marginBottom: '80px' }}>
+              <h2 style={{ textAlign: 'center', fontSize: '36px', fontWeight: '700', marginBottom: '60px', color: 'var(--text-primary)' }}>
+                How It Works
+              </h2>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '32px', maxWidth: '900px', margin: '0 auto' }}>
+                <div style={{ textAlign: 'center', position: 'relative' }}>
+                  <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, var(--primary-purple), var(--secondary-purple))', borderRadius: '50%', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', boxShadow: 'var(--shadow-purple)' }}>📸</div>
+                  <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>1. Upload</h3>
+                  <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>Drop your product image and our AI analyzes every detail</p>
+                </div>
+                <div style={{ textAlign: 'center', position: 'relative' }}>
+                  <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, var(--primary-orange), var(--secondary-orange))', borderRadius: '50%', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', boxShadow: 'var(--shadow-orange)' }}>✨</div>
+                  <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>2. Transform</h3>
+                  <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>Advanced AI creates 4 studio-quality variations with perfect lighting</p>
+                </div>
+                <div style={{ textAlign: 'center', position: 'relative' }}>
+                  <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, var(--accent-pink), var(--primary-purple))', borderRadius: '50%', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', boxShadow: '0 0 30px rgba(236, 72, 153, 0.4)' }}>🚀</div>
+                  <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '12px', color: 'var(--text-primary)' }}>3. Download</h3>
+                  <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>Get high-res images ready for your store, ads, or social media</p>
+                </div>
+              </div>
+            </section>
+
+            {/* Feature Cards */}
+            <section className="features">
+              <div className="feature-card">
+                <span className="feature-icon">⚡</span>
+                <h3 className="feature-title">Lightning Fast</h3>
+                <p className="feature-description">
+                  Generate 4 professional shots in under 30 seconds. No waiting, just instant magic.
+                </p>
+              </div>
+
+              <div className="feature-card">
+                <span className="feature-icon">🎨</span>
+                <h3 className="feature-title">Studio Quality</h3>
+                <p className="feature-description">
+                  AI-powered lighting, shadows, and angles that rival $10,000 photography setups.
+                </p>
+              </div>
+
+              <div className="feature-card">
+                <span className="feature-icon">💎</span>
+                <h3 className="feature-title">Premium Results</h3>
+                <p className="feature-description">
+                  4K resolution images perfect for e-commerce, marketing, and social media.
+                </p>
+              </div>
+            </section>
+          </section>
         </div>
-
-        {/* Feature Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-          <div className="feature-card text-center">
-            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-2xl flex items-center justify-center">
-              <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-4">⚡ Lightning Fast</h3>
-            <p className="text-gray-400 text-lg leading-relaxed">
-              Generate 4 professional shots in under 60 seconds. No waiting, just instant results.
-            </p>
-          </div>
-
-          <div className="feature-card text-center">
-            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-2xl flex items-center justify-center">
-              <svg className="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-4">🎨 Studio Quality</h3>
-            <p className="text-gray-400 text-lg leading-relaxed">
-              AI-powered lighting and angles that rival professional photography studios.
-            </p>
-          </div>
-
-          <div className="feature-card text-center">
-            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-emerald-500/20 to-green-500/20 rounded-2xl flex items-center justify-center">
-              <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-4">💰 Cost Effective</h3>
-            <p className="text-gray-400 text-lg leading-relaxed">
-              Save thousands on product photography costs. One upload, infinite possibilities.
-            </p>
-          </div>
-        </div>
-
       </div>
-    </div>
+    </>
   )
 }

@@ -23,12 +23,10 @@ export default function GlassButton({
 
   const variantClasses = {
     primary: `
-      glass-button
-      ${!disabled ? 'hover:bg-green-500/30 hover:border-green-400/50' : ''}
+      gitsnack-button-primary
     `,
     secondary: `
-      backdrop-blur-md bg-white/10 border border-white/20 text-white
-      ${!disabled ? 'hover:bg-white/20 hover:border-white/30' : ''}
+      gitsnack-button
     `
   }
 
